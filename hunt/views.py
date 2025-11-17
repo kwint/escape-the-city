@@ -17,7 +17,7 @@ def scan_post(request, qr_code_identifier):
         group_password = request.POST.get('password', '').strip()
 
         if not group_password:
-            messages.error(request, 'Please enter your group password.')
+            messages.error(request, 'Voer je groepswachtwoord in.')
             return render(request, 'hunt/scan.html', {'post': post})
 
         try:
@@ -27,17 +27,17 @@ def scan_post(request, qr_code_identifier):
             existing_scan = Scan.objects.filter(group=group, post=post).first()
 
             if existing_scan:
-                messages.info(request, f'Your group has already scanned this post on {existing_scan.scanned_at.strftime("%Y-%m-%d %H:%M:%S")}.')
+                messages.info(request, f'Je groep heeft deze post al gescand op {existing_scan.scanned_at.strftime("%Y-%m-%d %H:%M:%S")}.')
             else:
                 # Create a new scan record
                 Scan.objects.create(group=group, post=post, scanned_at=timezone.now())
-                messages.success(request, f'Successfully logged scan for {group}!')
+                messages.success(request, f'Scan succesvol geregistreerd voor {group}!')
 
             # Redirect to download page
             return redirect('download_pdf', qr_code_identifier=qr_code_identifier, group_id=group.id)
 
         except Group.DoesNotExist:
-            messages.error(request, 'Invalid group password. Please try again.')
+            messages.error(request, 'Ongeldig groepswachtwoord. Probeer opnieuw.')
             return render(request, 'hunt/scan.html', {'post': post})
 
     return render(request, 'hunt/scan.html', {'post': post})
@@ -54,14 +54,14 @@ def download_pdf(request, qr_code_identifier, group_id):
     scan = Scan.objects.filter(group=group, post=post).first()
 
     if not scan:
-        messages.error(request, 'Access denied. Please scan the QR code and enter your password first.')
+        messages.error(request, 'Toegang geweigerd. Scan eerst de QR code en voer je wachtwoord in.')
         return redirect('scan_post', qr_code_identifier=qr_code_identifier)
 
     # Serve the PDF file
     try:
-        return FileResponse(post.pdf_file.open('rb'), content_type='application/pdf', as_attachment=True, filename=f'{post.name}_instructions.pdf')
+        return FileResponse(post.pdf_file.open('rb'), content_type='application/pdf', as_attachment=True, filename=f'{post.name}_instructies.pdf')
     except Exception as e:
-        messages.error(request, 'Error downloading PDF file.')
+        messages.error(request, 'Fout bij downloaden van PDF bestand.')
         return redirect('scan_post', qr_code_identifier=qr_code_identifier)
 
 

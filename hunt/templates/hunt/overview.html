@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="nl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Scavenger Hunt Overview</title>
+    <title>Speurtocht Overzicht</title>
     <style>
         body {
             font-family: 'Arial Black', Arial, sans-serif;
@@ -188,21 +188,21 @@
 <body>
     <div class="header">
         <h1>ESCAPE THE CITY</h1>
-        <p style="color: white; font-size: 18px; margin: 0 0 20px 0; font-weight: normal;">Live Progress Overview</p>
+        <p style="color: white; font-size: 18px; margin: 0 0 20px 0; font-weight: normal;">Live Voortgangsoverzicht</p>
         <a href="/admin/" class="admin-link">Admin</a>
     </div>
 
     <div class="stats">
         <div class="stat-card">
-            <div class="stat-label">Farthest Post Reached</div>
+            <div class="stat-label">Verste Post Bereikt</div>
             <div class="stat-number">{% if farthest_post %}{{ farthest_post.order }}. {{ farthest_post.name }}{% else %}—{% endif %}</div>
         </div>
         <div class="stat-card">
-            <div class="stat-label">First Place ({{ first_place_points }} pts)</div>
+            <div class="stat-label">Eerste Plaats ({{ first_place_points }} ptn)</div>
             <div class="stat-number">{% if first_place_group %}{{ first_place_group }}{% else %}—{% endif %}</div>
         </div>
         <div class="stat-card">
-            <div class="stat-label">Scans Remaining</div>
+            <div class="stat-label">Scans Resterend</div>
             <div class="stat-number">{{ remaining_scans }}</div>
         </div>
     </div>
@@ -211,12 +211,12 @@
         <table>
             <thead>
                 <tr>
-                    <th class="first-column">Group / Post</th>
+                    <th class="first-column">Groepje / Post</th>
                     {% for post in posts %}
                     <th>{{ post.order }}. {{ post.name }}</th>
                     {% endfor %}
-                    <th>Total</th>
-                    <th>Points</th>
+                    <th>Totaal</th>
+                    <th>Punten</th>
                 </tr>
             </thead>
             <tbody>
@@ -231,8 +231,8 @@
                             <div class="tooltip">
                                 <span class="checkmark">✓ {{ scan_info.points }}</span>
                                 <span class="tooltiptext">
-                                    Scanned: {{ scan_info.scan.scanned_at|date:"Y-m-d H:i:s" }}<br>
-                                    Points: {{ scan_info.points }}
+                                    Gescand: {{ scan_info.scan.scanned_at|date:"Y-m-d H:i:s" }}<br>
+                                    Punten: {{ scan_info.points }}
                                 </span>
                             </div>
                         {% else %}
@@ -245,7 +245,7 @@
                 </tr>
                 {% endfor %}
                 <tr class="totals-row">
-                    <td>Completed by Groups</td>
+                    <td>Voltooid door Groepjes</td>
                     {% for total in post_totals %}
                     <td>{{ total }}</td>
                     {% endfor %}
@@ -255,9 +255,9 @@
         </table>
 
         <div class="legend">
-            <span class="legend-item"><span class="checkmark">✓ N</span> = Scanned (N = points earned, hover for details)</span>
-            <span class="legend-item"><span class="cross">—</span> = Not yet scanned</span>
-            <span class="legend-item">Points: 1st place gets {{ groups|length }} pts, 2nd gets {{ groups|length|add:"-1" }} pts, etc.</span>
+            <span class="legend-item"><span class="checkmark">✓ N</span> = Gescand (N = punten verdiend, hover voor details)</span>
+            <span class="legend-item"><span class="cross">—</span> = Nog niet gescand</span>
+            <span class="legend-item">Punten: 1e plaats krijgt {{ groups|length }} ptn, 2e krijgt {{ groups|length|add:"-1" }} ptn, etc.</span>
         </div>
     </div>
 </body>

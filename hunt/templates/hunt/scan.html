@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="nl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -129,7 +129,7 @@
     <div class="container">
         <h1>{{ post.name }}</h1>
         <div class="location">
-            <strong>Location:</strong> {{ post.description }}
+            {{ post.description }}
         </div>
 
         {% if messages %}
@@ -145,10 +145,10 @@
         <form method="post">
             {% csrf_token %}
             <div class="form-group">
-                <label for="password">Enter Your Group Password:</label>
+                <label for="password">Voer je groepswachtwoord in:</label>
                 <input type="text" id="password" name="password" required autofocus>
             </div>
-            <button type="submit">Submit and Download Instructions</button>
+            <button type="submit">Verstuur en download instructies</button>
         </form>
     </div>
 </body>

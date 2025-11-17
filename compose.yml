@@ -5,7 +5,7 @@ services:
     build: .
     container_name: escape-the-city
     restart: unless-stopped
-    expose:
+    ports:
       - "8000:8000"
     volumes:
       - ./db:/app/db
