@@ -33,12 +33,13 @@
             display: flex;
             gap: 10px;
             align-items: stretch;
+            height: 60px;
+            max-width: 200px;
         }
         .admin-link {
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 12px 24px;
             background-color: #FF8247;
             color: #3A3A3A;
             text-decoration: none;
@@ -46,6 +47,7 @@
             font-size: 16px;
             font-weight: bold;
             transition: transform 0.2s;
+            flex-grow: 1;
         }
         .admin-link:hover {
             transform: translateY(-2px);
@@ -53,7 +55,6 @@
         }
         .refresh-link {
             font-size: 32px;
-            padding: 6px 12px;
         }
         .overview-container {
             background-color: #3A3A3A;
