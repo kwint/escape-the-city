@@ -149,22 +149,15 @@ yourdomain.com, www.yourdomain.com {
         max_size 20MB
     }
 
-    # Root directory for static files
-    root * /path/to/escape-the-city
+    # Root directory for serving files
+    root * /escape-the-city
 
-    # Serve static files directly (CSS, JS, admin assets)
-    handle /static/* {
-        file_server {
-            root /path/to/escape-the-city
-        }
-        encode gzip
+    # Serve static and media files directly
+    @files {
+        path /static/* /media/*
     }
-
-    # Serve media files directly (uploaded PDFs)
-    handle /media/* {
-        file_server {
-            root /path/to/escape-the-city
-        }
+    handle @files {
+        file_server
     }
 
     # Proxy everything else to Django app
@@ -177,7 +170,7 @@ yourdomain.com, www.yourdomain.com {
         }
     }
 
-    # Enable compression for proxied content
+    # Enable compression for all responses
     encode gzip
 
     # Security headers
@@ -190,7 +183,7 @@ yourdomain.com, www.yourdomain.com {
 }
 ```
 
-**Note:** Replace `/path/to/escape-the-city` with the actual path where your app is deployed (e.g., `/home/user/escape-the-city`).
+**Note:** Replace `/escape-the-city` with the actual path where your app is deployed (e.g., `/home/user/escape-the-city`).
 
 **Reload Caddy after changes:**
 ```bash
