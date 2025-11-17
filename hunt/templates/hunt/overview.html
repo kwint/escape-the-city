@@ -49,7 +49,6 @@
             padding: 20px;
             border-radius: 0;
             box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-            overflow-x: auto;
         }
         table {
             width: 100%;
@@ -109,6 +108,14 @@
             background-color: #FF8247;
             color: #3A3A3A;
             font-weight: bold;
+        }
+        .totals-first-column {
+            background-color: #FF8247;
+            color: #3A3A3A;
+            font-weight: bold;
+            position: sticky;
+            left: 0;
+            z-index: 9;
         }
         .tooltip {
             position: relative;
@@ -241,6 +248,7 @@
     </div>
 
     <div class="overview-container">
+        <div style="overflow-x: auto;">
         <table>
             <thead>
                 <tr>
@@ -297,7 +305,7 @@
                 </tr>
                 {% endfor %}
                 <tr class="totals-row">
-                    <td>Voltooid door Groepjes</td>
+                    <td class="totals-first-column">Voltooid door Groepjes</td>
                     <td></td>
                     {% if user.is_authenticated %}
                     <td></td>
@@ -309,6 +317,7 @@
                 </tr>
             </tbody>
         </table>
+        </div>
 
         <div class="legend">
             <span class="legend-item"><span class="checkmark">✓ N</span> = Gescand (N = punten verdiend, hover voor details)</span>
