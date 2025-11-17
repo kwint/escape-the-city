@@ -15,6 +15,8 @@ A Django-based web application for managing digital scavenger hunts with QR code
 
 ## Installation & Setup
 
+### Development Setup
+
 ### 1. Create a superuser account
 ```bash
 uv run python manage.py createsuperuser
@@ -27,6 +29,23 @@ uv run python manage.py runserver
 
 ### 3. Access the admin interface
 Open your browser and go to: `http://localhost:8000/admin/`
+
+### Production Deployment (Docker)
+
+For production deployment with Docker, see [DEPLOYMENT.md](DEPLOYMENT.md) for detailed instructions.
+
+**Quick start:**
+```bash
+# Configure environment
+cp .env.example .env
+nano .env
+
+# Build and start
+docker-compose up -d
+
+# Create admin user
+docker-compose exec web uv run python manage.py createsuperuser
+```
 
 ## Usage Guide
 

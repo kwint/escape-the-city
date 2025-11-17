@@ -1,0 +1,24 @@
+# Production docker-compose configuration
+# Use this as a reference for adding your own customizations
+
+version: '3.8'
+
+services:
+  web:
+    build: .
+    container_name: escape-the-city
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./db:/app/db
+      - ./media:/app/media
+    environment:
+      - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}
+      - DJANGO_ALLOWED_HOSTS=${DJANGO_ALLOWED_HOSTS}
+      - DJANGO_DEBUG=False
+      - DJANGO_CSRF_TRUSTED_ORIGINS=${DJANGO_CSRF_TRUSTED_ORIGINS}
+    # Optional: Add custom labels for your reverse proxy here
+    # labels:
+    #   - "traefik.enable=true"
+    #   - "traefik.http.routers.scavenger-hunt.rule=Host(`yourdomain.com`)"
