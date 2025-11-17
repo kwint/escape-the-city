@@ -58,12 +58,12 @@ class ScanInline(admin.TabularInline):
 
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
-    list_display = ['order', 'name', 'description', 'scan_count', 'qr_code_link', 'created_at']
+    list_display = ['order', 'name', 'description', 'scan_count', 'scan_page_link', 'qr_code_link', 'created_at']
     list_display_links = ['name']
     list_editable = ['order']
     search_fields = ['name', 'description']
     list_filter = ['created_at']
-    readonly_fields = ['qr_code_identifier', 'created_at', 'qr_code_preview']
+    readonly_fields = ['qr_code_identifier', 'created_at', 'qr_code_preview', 'scan_page_link']
     inlines = [ScanInline]
 
     fieldsets = (
@@ -74,8 +74,8 @@ class PostAdmin(admin.ModelAdmin):
             'fields': ('pdf_file',)
         }),
         ('QR Code', {
-            'fields': ('qr_code_identifier', 'qr_code_preview'),
-            'description': 'Use the "View QR Code" link in the post list to generate and download the QR code.'
+            'fields': ('qr_code_identifier', 'scan_page_link', 'qr_code_preview'),
+            'description': 'Use the "Scan Pagina" link to test the scan page. Use "View QR Code" in the post list to generate and download the QR code.'
         }),
         ('Metadata', {
             'fields': ('created_at',),
@@ -88,6 +88,14 @@ class PostAdmin(admin.ModelAdmin):
         count = obj.scans.count()
         return count
     scan_count.short_description = 'Total Scans'
+
+    def scan_page_link(self, obj):
+        """Display a link to the scan page."""
+        if obj.pk:
+            url = reverse('scan_post', args=[obj.qr_code_identifier])
+            return format_html('<a href="{}" target="_blank">Scan Pagina</a>', url)
+        return '-'
+    scan_page_link.short_description = 'Scan Page'
 
     def qr_code_link(self, obj):
         """Display a link to generate and view the QR code."""
