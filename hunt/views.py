@@ -71,7 +71,7 @@ def generate_qr(request, post_id):
     Only accessible to admin users.
     """
     if not request.user.is_staff:
-        raise Http404("Page not found")
+        return redirect('/admin/login/')
 
     post = get_object_or_404(Post, id=post_id)
     qr_url = post.get_qr_url(request)
@@ -85,7 +85,7 @@ def overview(request):
     Only accessible to admin users.
     """
     if not request.user.is_staff:
-        raise Http404("Page not found")
+        return redirect('/admin/login/?next=/')
 
     # Get all groups and posts ordered
     groups = Group.objects.all().order_by('scout_group', 'name')
