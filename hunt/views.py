@@ -82,10 +82,7 @@ def generate_qr(request, post_id):
 def overview(request):
     """
     Overview page showing a matrix of all posts and groups with scan status.
-    Only accessible to admin users.
     """
-    if not request.user.is_staff:
-        return redirect('/admin/login/?next=/')
 
     # Get all groups and posts ordered
     groups = Group.objects.all().order_by('scout_group', 'name')
