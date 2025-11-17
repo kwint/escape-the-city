@@ -68,6 +68,17 @@ Follow the prompts to create your admin account.
 
 ### 5. Configure Reverse Proxy
 
+Your reverse proxy should handle three things:
+1. **SSL/HTTPS** - Automatic with Caddy, manual with Nginx
+2. **Static files** (`/static/`) - CSS, JS, and Django admin assets
+3. **Media files** (`/media/`) - User-uploaded PDFs
+4. **Dynamic requests** - Everything else proxied to Django
+
+**Why serve static/media files from the reverse proxy?**
+- Better performance (no Django processing)
+- Efficient caching
+- Reduced load on the Django application
+
 #### Nginx Example
 
 ```nginx
@@ -87,16 +98,27 @@ server {
 
     client_max_body_size 20M;
 
+    # Serve static files directly (CSS, JS, admin assets)
+    location /static/ {
+        alias /path/to/escape-the-city/staticfiles/;
+        expires 30d;
+        add_header Cache-Control "public, immutable";
+    }
+
+    # Serve media files directly (uploaded PDFs)
+    location /media/ {
+        alias /path/to/escape-the-city/media/;
+        expires 7d;
+        add_header Cache-Control "public";
+    }
+
+    # Proxy everything else to Django app
     location / {
         proxy_pass http://localhost:8000;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
-    }
-
-    location /media/ {
-        proxy_pass http://localhost:8000/media/;
     }
 }
 ```
@@ -122,23 +144,43 @@ Create or edit your `Caddyfile`:
 yourdomain.com, www.yourdomain.com {
     # Automatic HTTPS via Let's Encrypt
 
-    # Set maximum upload size
+    # Set maximum upload size for PDF uploads
     request_body {
         max_size 20MB
     }
 
-    # Proxy to Django app
-    reverse_proxy localhost:8000 {
-        header_up Host {host}
-        header_up X-Real-IP {remote_host}
-        header_up X-Forwarded-For {remote_host}
-        header_up X-Forwarded-Proto {scheme}
+    # Root directory for static files
+    root * /path/to/escape-the-city
+
+    # Serve static files directly (CSS, JS, admin assets)
+    handle /static/* {
+        file_server {
+            root /path/to/escape-the-city
+        }
+        encode gzip
     }
 
-    # Optional: Enable compression
+    # Serve media files directly (uploaded PDFs)
+    handle /media/* {
+        file_server {
+            root /path/to/escape-the-city
+        }
+    }
+
+    # Proxy everything else to Django app
+    handle {
+        reverse_proxy localhost:8000 {
+            header_up Host {host}
+            header_up X-Real-IP {remote_host}
+            header_up X-Forwarded-For {remote_host}
+            header_up X-Forwarded-Proto {scheme}
+        }
+    }
+
+    # Enable compression for proxied content
     encode gzip
 
-    # Optional: Add security headers
+    # Security headers
     header {
         # Remove server information
         -Server
@@ -147,6 +189,8 @@ yourdomain.com, www.yourdomain.com {
     }
 }
 ```
+
+**Note:** Replace `/path/to/escape-the-city` with the actual path where your app is deployed (e.g., `/home/user/escape-the-city`).
 
 **Reload Caddy after changes:**
 ```bash
@@ -163,8 +207,9 @@ The following directories are mounted as volumes and will persist data:
 
 - `./db/` - SQLite database
 - `./media/` - Uploaded PDF files
+- `./staticfiles/` - Static assets (CSS, JS, admin interface)
 
-**Important:** Back up these directories regularly!
+**Important:** Back up `db/` and `media/` directories regularly! The `staticfiles/` directory is regenerated from the app so doesn't need backup.
 
 ## Maintenance
 

@@ -5,13 +5,18 @@ services:
     build: .
     container_name: escape-the-city
     restart: unless-stopped
-    ports:
+    expose:
       - "8000:8000"
     volumes:
       - ./db:/app/db
-      - ./media:/app/media
+      - web_mediafiles:/app/media
+      - web_staticfiles:/app/staticfiles
     environment:
       - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY:-change-me-in-production}
       - DJANGO_ALLOWED_HOSTS=${DJANGO_ALLOWED_HOSTS:-localhost,127.0.0.1}
       - DJANGO_DEBUG=False
       - DJANGO_CSRF_TRUSTED_ORIGINS=${DJANGO_CSRF_TRUSTED_ORIGINS:-http://localhost:8000}
+
+volumes:
+  web_mediafiles:
+  web_staticfiles:
