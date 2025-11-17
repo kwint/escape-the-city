@@ -24,14 +24,9 @@ def scan_post(request, qr_code_identifier):
             group = Group.objects.get(password=group_password)
 
             # Check if this group has already scanned this post
-            existing_scan = Scan.objects.filter(group=group, post=post).first()
-
-            if existing_scan:
-                messages.info(request, f'Je groep heeft deze post al gescand op {existing_scan.scanned_at.strftime("%Y-%m-%d %H:%M:%S")}.')
-            else:
+            if not Scan.objects.filter(group=group, post=post).exists():
                 # Create a new scan record
                 Scan.objects.create(group=group, post=post, scanned_at=timezone.now())
-                messages.success(request, f'Scan succesvol geregistreerd voor {group}!')
 
             # Redirect to download page
             return redirect('download_pdf', qr_code_identifier=qr_code_identifier, group_id=group.id)
