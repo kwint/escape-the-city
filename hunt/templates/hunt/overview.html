@@ -135,6 +135,39 @@
             visibility: visible;
             opacity: 1;
         }
+        .members-cell {
+            text-align: left !important;
+            font-size: 10px;
+            color: #ccc;
+            background-color: #2C2C2C;
+            max-width: 100px;
+            padding: 6px !important;
+            font-weight: normal;
+        }
+        .members-text {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .phone-cell {
+            text-align: center !important;
+            font-size: 10px;
+            color: #ccc;
+            background-color: #2C2C2C;
+            padding: 6px !important;
+            font-weight: normal;
+        }
+        .phone-link {
+            color: #FF8247;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .phone-link:hover {
+            color: #FFA06E;
+            text-decoration: underline;
+        }
         .stats {
             margin-bottom: 20px;
             display: flex;
@@ -212,6 +245,10 @@
             <thead>
                 <tr>
                     <th class="first-column">Groepje / Post</th>
+                    <th>Leden</th>
+                    {% if user.is_authenticated %}
+                    <th>Tel</th>
+                    {% endif %}
                     {% for post in posts %}
                     <th>{{ post.order }}. {{ post.name }}</th>
                     {% endfor %}
@@ -225,6 +262,21 @@
                     <td class="group-name">
                         {{ row.group }}
                     </td>
+                    <td class="members-cell">
+                        <div class="tooltip">
+                            <div class="members-text">{{ row.group.members|default:"—" }}</div>
+                            <span class="tooltiptext">{{ row.group.members|default:"—" }}</span>
+                        </div>
+                    </td>
+                    {% if user.is_authenticated %}
+                    <td class="phone-cell">
+                        {% if row.group.phone_number %}
+                            <a href="tel:{{ row.group.phone_number }}" class="phone-link">{{ row.group.phone_number }}</a>
+                        {% else %}
+                            —
+                        {% endif %}
+                    </td>
+                    {% endif %}
                     {% for scan_info in row.scans %}
                     <td class="{% if scan_info.completed %}completed{% else %}incomplete{% endif %}">
                         {% if scan_info.completed %}
@@ -246,6 +298,10 @@
                 {% endfor %}
                 <tr class="totals-row">
                     <td>Voltooid door Groepjes</td>
+                    <td></td>
+                    {% if user.is_authenticated %}
+                    <td></td>
+                    {% endif %}
                     {% for total in post_totals %}
                     <td>{{ total }}</td>
                     {% endfor %}

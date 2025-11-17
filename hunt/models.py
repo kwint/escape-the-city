@@ -8,6 +8,8 @@ class Group(models.Model):
     name = models.CharField(max_length=100)
     scout_group = models.CharField(max_length=100)
     password = models.CharField(max_length=100)
+    members = models.TextField(blank=True, help_text="Namen van groepsleden (één per regel)")
+    phone_number = models.CharField(max_length=20, blank=True, help_text="Contactnummer van de groep")
     created_at = models.DateTimeField(default=timezone.now)
 
     class Meta:

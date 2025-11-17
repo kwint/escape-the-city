@@ -17,10 +17,10 @@ class GroupAdmin(admin.ModelAdmin):
         """Hide password field when adding a new group, show it when editing."""
         if obj is None:
             # Adding new group - hide password field
-            return ['scout_group', 'name']
+            return ['scout_group', 'name', 'members', 'phone_number']
         else:
             # Editing existing group - show all fields
-            return ['scout_group', 'name', 'password', 'created_at']
+            return ['scout_group', 'name', 'password', 'members', 'phone_number', 'created_at']
 
     def save_model(self, request, obj, form, change):
         """Auto-generate password from Dutch foods list when creating new group."""
