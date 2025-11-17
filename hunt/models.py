@@ -13,6 +13,8 @@ class Group(models.Model):
     class Meta:
         ordering = ['scout_group', 'name']
         unique_together = ['name', 'scout_group']
+        verbose_name = "groep"
+        verbose_name_plural = "Groepjes"
 
     def __str__(self):
         return f"{self.scout_group} {self.name}"
@@ -29,6 +31,8 @@ class Post(models.Model):
 
     class Meta:
         ordering = ['order', 'name']
+        verbose_name = "post"
+        verbose_name_plural = "posten"
 
     def __str__(self):
         return f"{self.order}. {self.name}"
@@ -47,6 +51,7 @@ class Scan(models.Model):
     class Meta:
         ordering = ['-scanned_at']
         unique_together = ['group', 'post']
+        
 
     def __str__(self):
         return f"{self.group} - {self.post.name} at {self.scanned_at}"
