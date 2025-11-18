@@ -249,7 +249,17 @@
     <div class="stats">
         <div class="stat-card">
             <div class="stat-label">Verste Post Bereikt</div>
-            <div class="stat-number">{% if farthest_post %}{{ farthest_post.order }}. {{ farthest_post.name }}{% else %}—{% endif %}</div>
+            <div class="stat-number">
+                {% if farthest_post %}
+                    {% if user.is_authenticated %}
+                        {{ farthest_post.order }}. {{ farthest_post.name }}
+                    {% else %}
+                        Post {{ farthest_post.order }}
+                    {% endif %}
+                {% else %}
+                    —
+                {% endif %}
+            </div>
         </div>
         <div class="stat-card">
             <div class="stat-label">Eerste Plaats ({{ first_place_points }} ptn)</div>
@@ -258,6 +268,10 @@
         <div class="stat-card">
             <div class="stat-label">Scans Resterend</div>
             <div class="stat-number">{{ remaining_scans }}</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Totaal Tags</div>
+            <div class="stat-number">{{ total_tags }}</div>
         </div>
     </div>
 
@@ -272,9 +286,17 @@
                     <th>Tel</th>
                     {% endif %}
                     {% for post in posts %}
-                    <th>{{ post.order }}. {{ post.name }}</th>
+                    <th>
+                        {% if user.is_authenticated %}
+                            {{ post.order }}. {{ post.name }}
+                        {% else %}
+                            Post {{ post.order }}
+                        {% endif %}
+                    </th>
                     {% endfor %}
                     <th>Totaal</th>
+                    <th>Tags</th>
+                    <th>Straf</th>
                     <th>Punten</th>
                 </tr>
             </thead>
@@ -315,7 +337,20 @@
                     </td>
                     {% endfor %}
                     <td class="totals-row">{{ row.total_completed }} / {{ posts|length }}</td>
-                    <td class="totals-row"><strong>{{ row.total_points }}</strong></td>
+                    <td class="totals-row">
+                        {% if row.tag_count > 0 %}
+                            <div class="tooltip">
+                                <span>🏷️ {{ row.tag_count }}</span>
+                                {% if row.last_tag %}
+                                <span class="tooltiptext">Laatst getagd: {{ row.last_tag.tagged_at|date:"Y-m-d H:i:s" }}<br>Door: {{ row.last_tag.tagger_name }}</span>
+                                {% endif %}
+                            </div>
+                        {% else %}
+                            —
+                        {% endif %}
+                    </td>
+                    <td class="totals-row">{% if row.tag_penalty > 0 %}-{{ row.tag_penalty }}{% else %}—{% endif %}</td>
+                    <td class="totals-row"><strong>{{ row.net_score }}</strong></td>
                 </tr>
                 {% endfor %}
                 <tr class="totals-row">
@@ -327,16 +362,17 @@
                     {% for total in post_totals %}
                     <td>{{ total }}</td>
                     {% endfor %}
-                    <td colspan="2"></td>
+                    <td colspan="4"></td>
                 </tr>
             </tbody>
         </table>
         </div>
 
         <div class="legend">
-            <span class="legend-item"><span class="checkmark">✓ N</span> = Gescand (N = punten verdiend, hover voor details)</span>
+            <span class="legend-item"><span class="checkmark">✓ {{ settings.points_per_scan }}</span> = Gescand ({{ settings.points_per_scan }} punten per scan, hover voor details)</span>
             <span class="legend-item"><span class="cross">—</span> = Nog niet gescand</span>
-            <span class="legend-item">Punten: 1e plaats krijgt {{ groups|length }} ptn, 2e krijgt {{ groups|length|add:"-1" }} ptn, etc.</span>
+            <span class="legend-item">🏷️ = Getagd door tagger (-{{ settings.tag_penalty }} punt per tag, hover voor details)</span>
+            <span class="legend-item">Punten: Elke groep begint met {{ settings.starting_points }} punten. Elke scan = +{{ settings.points_per_scan }} punten. Elke tag = -{{ settings.tag_penalty }} punt (min. 0).</span>
         </div>
     </div>
 </body>

@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.urls import reverse
 from django.utils.html import format_html
 import random
-from .models import Group, Post, Scan
+from .models import Group, Post, Scan, Tag, GameSettings
 from .passwords import DUTCH_FOODS
 
 
@@ -128,6 +128,49 @@ class ScanAdmin(admin.ModelAdmin):
 
     def has_add_permission(self, request):
         """Scans should only be created through the public interface."""
+        return False
+
+
+@admin.register(Tag)
+class TagAdmin(admin.ModelAdmin):
+    list_display = ['group', 'tagger_name', 'tagged_at']
+    list_filter = ['tagged_at', 'group', 'tagger_name']
+    search_fields = ['group__name', 'group__scout_group', 'tagger_name']
+    readonly_fields = ['group', 'tagger_name', 'tagged_at']
+    date_hierarchy = 'tagged_at'
+    ordering = ['-tagged_at']
+
+    def has_add_permission(self, request):
+        """Tags should only be created through the public interface."""
+        return False
+
+
+@admin.register(GameSettings)
+class GameSettingsAdmin(admin.ModelAdmin):
+    """
+    Admin interface for game settings (singleton).
+    Changes take effect immediately - no server restart needed!
+    """
+    list_display = ['__str__', 'starting_points', 'points_per_scan', 'tag_penalty', 'updated_at']
+    readonly_fields = ['updated_at']
+
+    fieldsets = (
+        ('Punt Instellingen', {
+            'fields': ('starting_points', 'points_per_scan', 'tag_penalty'),
+            'description': 'Wijzig deze waarden om de punten tijdens het spel aan te passen. Wijzigingen zijn direct zichtbaar op het overzichtsdashboard.'
+        }),
+        ('Metadata', {
+            'fields': ('updated_at',),
+            'classes': ('collapse',)
+        }),
+    )
+
+    def has_add_permission(self, request):
+        """Only allow one settings instance."""
+        return not GameSettings.objects.exists()
+
+    def has_delete_permission(self, request, obj=None):
+        """Prevent deletion of settings."""
         return False
 
 
