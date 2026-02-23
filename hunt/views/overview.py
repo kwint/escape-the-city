@@ -93,6 +93,35 @@ def overview(request):
     # Calculate total tags
     total_tags = len(tags)
 
+    # Build recent actions list (scans and tags combined, sorted by time)
+    recent_actions = []
+
+    # Add recent scans
+    recent_scans = Scan.objects.select_related('group', 'post').order_by('-scanned_at')[:20]
+    for scan in recent_scans:
+        recent_actions.append({
+            'type': 'scan',
+            'time': scan.scanned_at,
+            'group': scan.group,
+            'description': f"Post {scan.post.order}" if not None else scan.post.name,
+            'post': scan.post,
+        })
+
+    # Add recent tags
+    recent_tags = Tag.objects.select_related('group', 'tagger').order_by('-tagged_at')[:20]
+    for tag in recent_tags:
+        recent_actions.append({
+            'type': 'tag',
+            'time': tag.tagged_at,
+            'group': tag.group,
+            'description': f"door {tag.tagger.name}" if tag.tagger else "onbekend",
+            'tagger': tag.tagger,
+        })
+
+    # Sort by time descending and take top 20
+    recent_actions.sort(key=lambda x: x['time'], reverse=True)
+    recent_actions = recent_actions[:20]
+
     context = {
         'groups': groups,
         'posts': posts,
@@ -104,6 +133,7 @@ def overview(request):
         'first_place_points': first_place_points,
         'total_tags': total_tags,
         'settings': settings,  # Pass settings to template for dynamic legend
+        'recent_actions': recent_actions,
     }
 
     return render(request, 'hunt/overview.html', context)

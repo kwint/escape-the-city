@@ -342,7 +342,7 @@
                             <div class="tooltip">
                                 <span>🏷️ {{ row.tag_count }}</span>
                                 {% if row.last_tag %}
-                                <span class="tooltiptext">Laatst getagd: {{ row.last_tag.tagged_at|date:"Y-m-d H:i:s" }}<br>Door: {{ row.last_tag.tagger_name }}</span>
+                                <span class="tooltiptext">Laatst getagd: {{ row.last_tag.tagged_at|date:"Y-m-d H:i:s" }}<br>Door: {{ row.last_tag.tagger.name }}</span>
                                 {% endif %}
                             </div>
                         {% else %}
@@ -374,6 +374,52 @@
             <span class="legend-item">🏷️ = Getagd door tagger (-{{ settings.tag_penalty }} punt per tag, hover voor details)</span>
             <span class="legend-item">Punten: Elke groep begint met {{ settings.starting_points }} punten. Elke scan = +{{ settings.points_per_scan }} punten. Elke tag = -{{ settings.tag_penalty }} punt (min. 0).</span>
         </div>
+    </div>
+
+    <div class="overview-container" style="margin-top: 30px;">
+        <h2 style="color: #FF8247; margin: 0 0 15px 0; font-size: 24px; text-transform: uppercase; letter-spacing: 1px;">Recente Activiteit</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 120px;">Tijd</th>
+                    <th style="width: 80px;">Type</th>
+                    <th>Groep</th>
+                    <th>Details</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for action in recent_actions %}
+                <tr>
+                    <td style="background-color: #2C2C2C; color: #999; font-size: 12px;">{{ action.time|date:"d M H:i:s" }}</td>
+                    <td style="background-color: #2C2C2C; text-align: center;">
+                        {% if action.type == 'scan' %}
+                            <span style="color: #6BFF6B; font-weight: bold;">📍 SCAN</span>
+                        {% else %}
+                            <span style="color: #FF6B6B; font-weight: bold;">🏷️ TAG</span>
+                        {% endif %}
+                    </td>
+                    <td style="background-color: #2C2C2C; color: #FF8247; font-weight: bold;">{{ action.group }}</td>
+                    <td style="background-color: #2C2C2C; color: white;">
+                        {% if action.type == 'scan' %}
+                            {% if user.is_authenticated %}
+                                {{ action.post.order }}. {{ action.post.name }}
+                            {% else %}
+                                Post {{ action.post.order }}
+                            {% endif %}
+                        {% else %}
+                            {{ action.description }}
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" style="background-color: #2C2C2C; color: #666; text-align: center; padding: 30px;">
+                        Nog geen activiteit
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 </body>
 </html>
