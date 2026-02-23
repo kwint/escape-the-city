@@ -98,6 +98,13 @@
             left: 0;
             z-index: 9;
         }
+        td.group-name a {
+            color: #FF8247;
+            text-decoration: none;
+        }
+        td.group-name a:hover {
+            text-decoration: underline;
+        }
         .checkmark {
             color: #FF8247;
             font-size: 20px;
@@ -305,7 +312,7 @@
                 {% for row in matrix %}
                 <tr>
                     <td class="group-name">
-                        {{ row.group }}
+                        <a href="{% url 'tag_group' qr_code_identifier=row.group.qr_code_identifier %}">{{ row.group }}</a>
                     </td>
                     <td class="members-cell">
                         <div class="tooltip">
