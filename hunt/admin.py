@@ -25,15 +25,15 @@ class GroupAdmin(admin.ModelAdmin):
     def tag_count(self, obj):
         """Display the number of times this group has been tagged."""
         return obj.tags.count()
-    tag_count.short_description = 'Tags'
+    tag_count.short_description = 'Drops'
 
     def tag_page_link(self, obj):
         """Display a link to the tag page."""
         if obj.pk:
             url = reverse('tag_group', args=[obj.qr_code_identifier])
-            return format_html('<a href="{}" target="_blank">Tag Pagina</a>', url)
+            return format_html('<a href="{}" target="_blank">Drop Pagina</a>', url)
         return '-'
-    tag_page_link.short_description = 'Tag Page'
+    tag_page_link.short_description = 'Drop Page'
 
     def qr_code_link(self, obj):
         """Display a link to generate and view the QR code."""
@@ -173,12 +173,12 @@ class TaggerAdmin(admin.ModelAdmin):
     def tag_count(self, obj):
         """Display the total number of tags by this tagger."""
         return obj.tags.count()
-    tag_count.short_description = 'Total Tags'
+    tag_count.short_description = 'Totaal Drops'
 
     def unique_groups(self, obj):
         """Display the number of unique groups tagged."""
         return obj.tags.values('group').distinct().count()
-    unique_groups.short_description = 'Unique Groups'
+    unique_groups.short_description = 'Unieke Groepen'
 
 
 @admin.register(Tag)

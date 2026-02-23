@@ -270,7 +270,7 @@
             <div class="stat-number">{{ remaining_scans }}</div>
         </div>
         <div class="stat-card">
-            <div class="stat-label">Totaal Tags</div>
+            <div class="stat-label">Totaal Drops</div>
             <div class="stat-number">{{ total_tags }}</div>
         </div>
     </div>
@@ -295,7 +295,7 @@
                     </th>
                     {% endfor %}
                     <th>Totaal</th>
-                    <th>Tags</th>
+                    <th>Drops</th>
                     <th>Straf</th>
                     <th>Punten</th>
                 </tr>
@@ -342,7 +342,7 @@
                             <div class="tooltip">
                                 <span>🏷️ {{ row.tag_count }}</span>
                                 {% if row.last_tag %}
-                                <span class="tooltiptext">Laatst getagd: {{ row.last_tag.tagged_at|date:"Y-m-d H:i:s" }}<br>Door: {{ row.last_tag.tagger.name }}</span>
+                                <span class="tooltiptext">Laatst gedropt: {{ row.last_tag.tagged_at|date:"Y-m-d H:i:s" }}<br>Door: {{ row.last_tag.tagger.name }}</span>
                                 {% endif %}
                             </div>
                         {% else %}
@@ -371,8 +371,8 @@
         <div class="legend">
             <span class="legend-item"><span class="checkmark">✓ {{ settings.points_per_scan }}</span> = Gescand ({{ settings.points_per_scan }} punten per scan, hover voor details)</span>
             <span class="legend-item"><span class="cross">—</span> = Nog niet gescand</span>
-            <span class="legend-item">🏷️ = Getagd door tagger (-{{ settings.tag_penalty }} punt per tag, hover voor details)</span>
-            <span class="legend-item">Punten: Elke groep begint met {{ settings.starting_points }} punten. Elke scan = +{{ settings.points_per_scan }} punten. Elke tag = -{{ settings.tag_penalty }} punt (min. 0).</span>
+            <span class="legend-item">🏷️ = Gedropt door bestuurder (-{{ settings.tag_penalty }} punt per drop, hover voor details)</span>
+            <span class="legend-item">Punten: Elke groep begint met {{ settings.starting_points }} punten. Elke scan = +{{ settings.points_per_scan }} punten. Elke drop = -{{ settings.tag_penalty }} punt (min. 0).</span>
         </div>
     </div>
 
@@ -395,7 +395,7 @@
                         {% if action.type == 'scan' %}
                             <span style="color: #6BFF6B; font-weight: bold;">📍 SCAN</span>
                         {% else %}
-                            <span style="color: #FF6B6B; font-weight: bold;">🏷️ TAG</span>
+                            <span style="color: #FF6B6B; font-weight: bold;">🏷️ DROP</span>
                         {% endif %}
                     </td>
                     <td style="background-color: #2C2C2C; color: #FF8247; font-weight: bold;">{{ action.group }}</td>

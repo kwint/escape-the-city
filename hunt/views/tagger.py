@@ -116,12 +116,12 @@ def tag_group(request, qr_code_identifier):
 
     if request.method == 'POST' and tagger:
         if not can_tag:
-            messages.error(request, f'Deze groep is recent getagd. Probeer het over {cooldown_remaining} minuten opnieuw.')
+            messages.error(request, f'Deze groep is recent gedropt. Probeer het over {cooldown_remaining} minuten opnieuw.')
         else:
             # Create tag record
             Tag.objects.create(group=group, tagger=tagger, tagged_at=timezone.now())
             tag_count = Tag.objects.filter(group=group).count()
-            messages.success(request, f'Groep "{group}" succesvol getagd! ({tag_count} tags totaal)')
+            messages.success(request, f'Groep "{group}" succesvol gedropt! ({tag_count} drops totaal)')
 
             # Update context after tagging
             context['tag_count'] = tag_count

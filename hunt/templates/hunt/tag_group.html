@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tag Groep - {{ group }}</title>
+    <title>Drop Groep - {{ group }}</title>
     <style>
         * {
             box-sizing: border-box;
@@ -239,7 +239,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>Tag Groep</h1>
+        <h1>Drop Groep</h1>
 
         {% if messages %}
         <div class="messages">
@@ -270,7 +270,7 @@
                 </div>
                 <div class="stat">
                     <div class="number">{{ tag_count }}</div>
-                    <div class="stat-label">Tags</div>
+                    <div class="stat-label">Drops</div>
                 </div>
                 <div class="stat">
                     <div class="number">{{ total_points }}</div>
@@ -307,7 +307,7 @@
                 <span class="value">+{{ scan_points }}</span>
             </div>
             <div class="points-row">
-                <span>Tags ({{ tag_count }} x -{{ settings.tag_penalty }})</span>
+                <span>Drops ({{ tag_count }} x -{{ settings.tag_penalty }})</span>
                 <span class="value negative">-{{ tag_penalty_points }}</span>
             </div>
             <div class="points-row total">
@@ -318,8 +318,8 @@
 
         {% if not tagger %}
             <div class="login-prompt">
-                Je moet ingelogd zijn om deze groep te taggen.
-                <a href="{% url 'tagger_login' %}">Log in als tagger</a>
+                Je moet ingelogd zijn om deze groep te droppen.
+                <a href="{% url 'tagger_login' %}">Log in als bestuurder</a>
             </div>
         {% else %}
             <div class="tagger-info">
@@ -329,14 +329,14 @@
 
             {% if not can_tag %}
             <div class="cooldown-warning">
-                Deze groep is recent getagd. Wacht nog {{ cooldown_remaining }} minuten voordat je opnieuw kunt taggen.
+                Deze groep is recent gedropt. Wacht nog {{ cooldown_remaining }} minuten voordat je opnieuw kunt droppen.
             </div>
             {% endif %}
 
             <form method="post">
                 {% csrf_token %}
                 <button type="submit" {% if not can_tag %}disabled{% endif %}>
-                    {% if can_tag %}Tag deze groep{% else %}Wachten...{% endif %}
+                    {% if can_tag %}Drop deze groep{% else %}Wachten...{% endif %}
                 </button>
             </form>
 

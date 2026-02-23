@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tagger Dashboard</title>
+    <title>Bestuurder Dashboard</title>
     <style>
         * {
             box-sizing: border-box;
@@ -182,7 +182,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>Tagger Dashboard</h1>
+        <h1>Bestuurder Dashboard</h1>
         <div class="tagger-info">
             Ingelogd als: <strong>{{ tagger.name }}</strong>
             <a href="{% url 'tagger_logout' %}">Uitloggen</a>
@@ -201,11 +201,11 @@
         <div class="stats-row">
             <div class="stat-card">
                 <div class="number">{{ total_tags_all }}</div>
-                <div class="stat-label">Totaal Tags</div>
+                <div class="stat-label">Totaal Drops</div>
             </div>
             <div class="stat-card">
                 <div class="number">{{ total_unique_groups }}</div>
-                <div class="stat-label">Groepen Getagd</div>
+                <div class="stat-label">Groepen Gedropt</div>
             </div>
             <div class="stat-card">
                 <div class="number">{{ total_groups }}</div>
@@ -213,7 +213,7 @@
             </div>
         </div>
 
-        <h2>Taggers Overzicht</h2>
+        <h2>Bestuurders Overzicht</h2>
         <div class="leaderboard">
             {% if all_taggers %}
                 {% for item in all_taggers %}
@@ -223,7 +223,7 @@
                     <div class="tagger-stats">
                         <div class="tagger-stat">
                             <div class="value">{{ item.total_tags }}</div>
-                            <div class="label">Tags</div>
+                            <div class="label">Drops</div>
                         </div>
                         <div class="tagger-stat">
                             <div class="value">{{ item.unique_groups }}</div>
@@ -233,11 +233,11 @@
                 </div>
                 {% endfor %}
             {% else %}
-                <div class="no-data">Nog geen taggers</div>
+                <div class="no-data">Nog geen bestuurders</div>
             {% endif %}
         </div>
 
-        <h2>Recente Tags</h2>
+        <h2>Recente Drops</h2>
         <div class="recent-tags">
             {% if recent_tags %}
                 {% for tag in recent_tags %}
@@ -250,7 +250,7 @@
                 </div>
                 {% endfor %}
             {% else %}
-                <div class="no-data">Nog geen tags</div>
+                <div class="no-data">Nog geen drops</div>
             {% endif %}
         </div>
     </div>

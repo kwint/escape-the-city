@@ -13,8 +13,8 @@ class Tag(models.Model):
 
     class Meta:
         ordering = ['-tagged_at']
-        verbose_name = "tag"
-        verbose_name_plural = "tags"
+        verbose_name = "drop"
+        verbose_name_plural = "drops"
 
     def __str__(self):
-        return f"{self.group} getagd door {self.tagger.name} om {self.tagged_at}"
+        return f"{self.group} gedropt door {self.tagger.name} om {self.tagged_at}"
