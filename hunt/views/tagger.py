@@ -16,7 +16,7 @@ def tagger_login(request):
         return redirect('tagger_dashboard')
 
     if request.method == 'POST':
-        password = request.POST.get('password', '').strip()
+        password = request.POST.get('password', '').strip().lower()
 
         if not password:
             messages.error(request, 'Voer je wachtwoord in.')

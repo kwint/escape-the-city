@@ -14,7 +14,7 @@ def scan_post(request, qr_code_identifier):
     post = get_object_or_404(Post, qr_code_identifier=qr_code_identifier)
 
     if request.method == 'POST':
-        group_password = request.POST.get('password', '').strip()
+        group_password = request.POST.get('password', '').strip().lower()
 
         if not group_password:
             messages.error(request, 'Voer je groepswachtwoord in.')
