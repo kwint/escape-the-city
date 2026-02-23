@@ -4,6 +4,7 @@ from . import views
 urlpatterns = [
     path('', views.overview, name='overview'),
     path('scan/<uuid:qr_code_identifier>/', views.scan_post, name='scan_post'),
+    path('scan/<uuid:qr_code_identifier>/success/<int:group_id>/', views.scan_success, name='scan_success'),
     path('download/<uuid:qr_code_identifier>/<int:group_id>/', views.download_pdf, name='download_pdf'),
 
     # Tagger URLs

@@ -8,7 +8,7 @@ class Post(models.Model):
     name = models.CharField(max_length=200, help_text="Naam van de post")
     description = models.TextField(help_text="Deze text wordt weergeven op de scan pagina", blank=True)
     qr_code_identifier = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
-    pdf_file = models.FileField(upload_to='instructions/')
+    pdf_file = models.FileField(upload_to='instructions/', blank=True, null=True)
     order = models.IntegerField(default=0, help_text="Order of the post in the hunt sequence")
     created_at = models.DateTimeField(default=timezone.now)
 
