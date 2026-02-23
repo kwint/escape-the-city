@@ -5,7 +5,14 @@ urlpatterns = [
     path('', views.overview, name='overview'),
     path('scan/<uuid:qr_code_identifier>/', views.scan_post, name='scan_post'),
     path('download/<uuid:qr_code_identifier>/<int:group_id>/', views.download_pdf, name='download_pdf'),
-    path('tag/', views.tag_group, name='tag_group'),
-    path('tag/<str:group_name', views.tag_group, name='tag_group'),
+
+    # Tagger URLs
+    path('tagger/login/', views.tagger_login, name='tagger_login'),
+    path('tagger/logout/', views.tagger_logout, name='tagger_logout'),
+    path('tagger/dashboard/', views.tagger_dashboard, name='tagger_dashboard'),
+    path('tag/<uuid:qr_code_identifier>/', views.tag_group, name='tag_group'),
+
+    # QR code generation (admin only)
     path('generate-qr/<int:post_id>/', views.generate_qr, name='generate_qr'),
+    path('generate-group-qr/<int:group_id>/', views.generate_group_qr, name='generate_group_qr'),
 ]

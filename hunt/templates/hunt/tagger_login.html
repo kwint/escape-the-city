@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tag een Groep</title>
+    <title>Tagger Login</title>
     <style>
         * {
             box-sizing: border-box;
@@ -59,7 +59,7 @@
             letter-spacing: 1px;
             font-size: 16px;
         }
-        input[type="text"] {
+        input[type="password"] {
             width: 100%;
             padding: 18px 16px;
             border: 3px solid #FF8247;
@@ -72,7 +72,7 @@
             -webkit-appearance: none;
             min-height: 56px;
         }
-        input[type="text"]:focus {
+        input[type="password"]:focus {
             outline: none;
             border-color: #FF8247;
             box-shadow: 0 0 0 3px rgba(255, 130, 71, 0.3);
@@ -127,9 +127,9 @@
 </head>
 <body>
     <div class="container">
-        <h1>Tag een Groep</h1>
+        <h1>Tagger Login</h1>
         <div class="description">
-            Als tagger kun je hier groepen taggen. Elke tag kost de groep 1 punt. Voer je eigen naam en het wachtwoord van de groep in om een tag te registreren.
+            Log in met je tagger wachtwoord om groepen te kunnen taggen.
         </div>
 
         {% if messages %}
@@ -145,14 +145,10 @@
         <form method="post">
             {% csrf_token %}
             <div class="form-group">
-                <label for="tagger_name">Je naam:</label>
-                <input type="text" id="tagger_name" name="tagger_name" required autofocus>
+                <label for="password">Wachtwoord:</label>
+                <input type="password" id="password" name="password" required autofocus>
             </div>
-            <div class="form-group">
-                <label for="password">Groepswachtwoord:</label>
-                <input type="text" id="password" name="password" required>
-            </div>
-            <button type="submit">Tag Groep</button>
+            <button type="submit">Inloggen</button>
         </form>
     </div>
 </body>

@@ -2,16 +2,16 @@ from django.contrib import admin
 from django.urls import reverse
 from django.utils.html import format_html
 import random
-from .models import Group, Post, Scan, Tag, GameSettings
+from .models import Group, Post, Scan, Tagger, Tag, GameSettings
 from .passwords import DUTCH_FOODS
 
 
 @admin.register(Group)
 class GroupAdmin(admin.ModelAdmin):
-    list_display = ['scout_group', 'name', 'password', 'created_at', 'scan_count']
+    list_display = ['scout_group', 'name', 'password', 'tag_count', 'scan_count', 'qr_code_link', 'created_at']
     search_fields = ['scout_group', 'name']
     list_filter = ['scout_group', 'created_at']
-    readonly_fields = ['created_at']
+    readonly_fields = ['created_at', 'qr_code_identifier', 'qr_code_preview', 'tag_page_link']
 
     def get_fields(self, request, obj=None):
         """Hide password field when adding a new group, show it when editing."""
@@ -20,7 +20,40 @@ class GroupAdmin(admin.ModelAdmin):
             return ['scout_group', 'name', 'members', 'phone_number']
         else:
             # Editing existing group - show all fields
-            return ['scout_group', 'name', 'password', 'members', 'phone_number', 'created_at']
+            return ['scout_group', 'name', 'password', 'members', 'phone_number', 'qr_code_identifier', 'tag_page_link', 'qr_code_preview', 'created_at']
+
+    def tag_count(self, obj):
+        """Display the number of times this group has been tagged."""
+        return obj.tags.count()
+    tag_count.short_description = 'Tags'
+
+    def tag_page_link(self, obj):
+        """Display a link to the tag page."""
+        if obj.pk:
+            url = reverse('tag_group', args=[obj.qr_code_identifier])
+            return format_html('<a href="{}" target="_blank">Tag Pagina</a>', url)
+        return '-'
+    tag_page_link.short_description = 'Tag Page'
+
+    def qr_code_link(self, obj):
+        """Display a link to generate and view the QR code."""
+        if obj.pk:
+            url = reverse('generate_group_qr', args=[obj.pk])
+            return format_html('<a href="{}" target="_blank">View QR</a>', url)
+        return '-'
+    qr_code_link.short_description = 'QR Code'
+
+    def qr_code_preview(self, obj):
+        """Show the QR code in the admin interface."""
+        if obj.pk:
+            url = reverse('generate_group_qr', args=[obj.pk])
+            return format_html(
+                '<a href="{}" target="_blank"><img src="{}" style="max-width: 200px;" /></a><br>'
+                '<small>Click to open in new tab</small>',
+                url, url
+            )
+        return '-'
+    qr_code_preview.short_description = 'QR Code Preview'
 
     def save_model(self, request, obj, form, change):
         """Auto-generate password from Dutch foods list when creating new group."""
@@ -131,12 +164,29 @@ class ScanAdmin(admin.ModelAdmin):
         return False
 
 
+@admin.register(Tagger)
+class TaggerAdmin(admin.ModelAdmin):
+    list_display = ['name', 'password', 'tag_count', 'unique_groups', 'created_at']
+    search_fields = ['name']
+    readonly_fields = ['created_at']
+
+    def tag_count(self, obj):
+        """Display the total number of tags by this tagger."""
+        return obj.tags.count()
+    tag_count.short_description = 'Total Tags'
+
+    def unique_groups(self, obj):
+        """Display the number of unique groups tagged."""
+        return obj.tags.values('group').distinct().count()
+    unique_groups.short_description = 'Unique Groups'
+
+
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
-    list_display = ['group', 'tagger_name', 'tagged_at']
-    list_filter = ['tagged_at', 'group', 'tagger_name']
-    search_fields = ['group__name', 'group__scout_group', 'tagger_name']
-    readonly_fields = ['group', 'tagger_name', 'tagged_at']
+    list_display = ['group', 'tagger', 'tagged_at']
+    list_filter = ['tagged_at', 'group', 'tagger']
+    search_fields = ['group__name', 'group__scout_group', 'tagger__name']
+    readonly_fields = ['group', 'tagger', 'tagged_at']
     date_hierarchy = 'tagged_at'
     ordering = ['-tagged_at']
 

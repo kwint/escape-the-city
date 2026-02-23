@@ -1,7 +1,8 @@
 from .group import Group
 from .post import Post
 from .scan import Scan
+from .tagger import Tagger
 from .tag import Tag
 from .game_settings import GameSettings
 
-__all__ = ['Group', 'Post', 'Scan', 'Tag', 'GameSettings']
+__all__ = ['Group', 'Post', 'Scan', 'Tagger', 'Tag', 'GameSettings']

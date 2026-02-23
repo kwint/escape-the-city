@@ -18,7 +18,7 @@ def overview(request):
     scan_lookup = {(scan.group_id, scan.post_id): scan for scan in scans}
 
     # Get all tags and count them per group
-    tags = Tag.objects.all().select_related('group')
+    tags = Tag.objects.all().select_related('group', 'tagger')
     tag_counts = {}  # {group_id: count}
     last_tags = {}   # {group_id: last_tag_object}
     for tag in tags:

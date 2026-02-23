@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tagger Dashboard</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        body {
+            font-family: 'Arial Black', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #FF8247;
+            min-height: 100vh;
+            display: flex;
+            align-items: stretch;
+            justify-content: center;
+        }
+        .container {
+            background-color: #3A3A3A;
+            padding: 24px;
+            width: 100%;
+            min-height: 100vh;
+        }
+        h1 {
+            color: #FF8247;
+            margin: 0 0 8px 0;
+            font-size: 28px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            line-height: 1.2;
+        }
+        .tagger-info {
+            color: white;
+            margin-bottom: 24px;
+            font-size: 16px;
+        }
+        .tagger-info a {
+            color: #FF8247;
+            margin-left: 12px;
+        }
+        .stats-row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        .stat-card {
+            background-color: #2C2C2C;
+            padding: 16px;
+            flex: 1;
+            text-align: center;
+            border-left: 5px solid #FF8247;
+        }
+        .stat-card .number {
+            color: #FF8247;
+            font-size: 36px;
+            font-weight: 900;
+            line-height: 1;
+        }
+        .stat-card .stat-label {
+            color: white;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 8px;
+        }
+        h2 {
+            color: #FF8247;
+            font-size: 18px;
+            margin: 28px 0 12px 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .leaderboard {
+            background-color: #2C2C2C;
+        }
+        .leaderboard-row {
+            display: flex;
+            align-items: center;
+            padding: 14px 16px;
+            border-bottom: 1px solid #3A3A3A;
+            color: white;
+        }
+        .leaderboard-row:last-child {
+            border-bottom: none;
+        }
+        .leaderboard-row.current {
+            background-color: #3A4A3A;
+            border-left: 4px solid #6BFF6B;
+        }
+        .rank {
+            width: 32px;
+            color: #FF8247;
+            font-weight: 900;
+            font-size: 18px;
+        }
+        .tagger-name {
+            flex: 1;
+            font-weight: 900;
+        }
+        .tagger-stats {
+            display: flex;
+            gap: 16px;
+            text-align: right;
+        }
+        .tagger-stat {
+            min-width: 50px;
+        }
+        .tagger-stat .value {
+            color: #FF8247;
+            font-weight: 900;
+            font-size: 18px;
+        }
+        .tagger-stat .label {
+            color: #888;
+            font-size: 10px;
+            text-transform: uppercase;
+        }
+        .recent-tags {
+            background-color: #2C2C2C;
+            padding: 16px;
+        }
+        .tag-item {
+            padding: 10px 0;
+            border-bottom: 1px solid #3A3A3A;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .tag-item:last-child {
+            border-bottom: none;
+        }
+        .tag-info {
+            flex: 1;
+        }
+        .tag-group {
+            font-weight: 900;
+            color: #FF8247;
+        }
+        .tag-tagger {
+            font-size: 12px;
+            color: #888;
+            margin-top: 2px;
+        }
+        .tag-time {
+            font-size: 11px;
+            color: #666;
+            text-align: right;
+        }
+        .no-data {
+            color: #888;
+            font-style: italic;
+            padding: 20px;
+            text-align: center;
+        }
+        .messages {
+            margin-bottom: 24px;
+        }
+        .message {
+            padding: 16px;
+            margin-bottom: 12px;
+            font-weight: bold;
+            border-left: 5px solid;
+            font-size: 15px;
+        }
+        .success {
+            background-color: #2C5C28;
+            color: #B4FFB4;
+            border-left-color: #6BFF6B;
+        }
+        .info {
+            background-color: #2C4C5C;
+            color: #B4D4FF;
+            border-left-color: #6BB4FF;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Tagger Dashboard</h1>
+        <div class="tagger-info">
+            Ingelogd als: <strong>{{ tagger.name }}</strong>
+            <a href="{% url 'tagger_logout' %}">Uitloggen</a>
+        </div>
+
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <div class="message {{ message.tags }}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="number">{{ total_tags_all }}</div>
+                <div class="stat-label">Totaal Tags</div>
+            </div>
+            <div class="stat-card">
+                <div class="number">{{ total_unique_groups }}</div>
+                <div class="stat-label">Groepen Getagd</div>
+            </div>
+            <div class="stat-card">
+                <div class="number">{{ total_groups }}</div>
+                <div class="stat-label">Totaal Groepen</div>
+            </div>
+        </div>
+
+        <h2>Taggers Overzicht</h2>
+        <div class="leaderboard">
+            {% if all_taggers %}
+                {% for item in all_taggers %}
+                <div class="leaderboard-row {% if item.is_current %}current{% endif %}">
+                    <div class="rank">{{ forloop.counter }}</div>
+                    <div class="tagger-name">{{ item.tagger.name }}</div>
+                    <div class="tagger-stats">
+                        <div class="tagger-stat">
+                            <div class="value">{{ item.total_tags }}</div>
+                            <div class="label">Tags</div>
+                        </div>
+                        <div class="tagger-stat">
+                            <div class="value">{{ item.unique_groups }}</div>
+                            <div class="label">Uniek</div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="no-data">Nog geen taggers</div>
+            {% endif %}
+        </div>
+
+        <h2>Recente Tags</h2>
+        <div class="recent-tags">
+            {% if recent_tags %}
+                {% for tag in recent_tags %}
+                <div class="tag-item">
+                    <div class="tag-info">
+                        <div class="tag-group">{{ tag.group }}</div>
+                        <div class="tag-tagger">door {{ tag.tagger.name }}</div>
+                    </div>
+                    <div class="tag-time">{{ tag.tagged_at|date:"d M H:i" }}</div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="no-data">Nog geen tags</div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

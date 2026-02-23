@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tag Groep - {{ group }}</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        body {
+            font-family: 'Arial Black', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #FF8247;
+            min-height: 100vh;
+            display: flex;
+            align-items: stretch;
+            justify-content: center;
+        }
+        .container {
+            background-color: #3A3A3A;
+            padding: 24px;
+            width: 100%;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        h1 {
+            color: #FF8247;
+            margin: 0 0 8px 0;
+            font-size: 32px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            line-height: 1.2;
+        }
+        .group-info {
+            color: white;
+            margin-bottom: 24px;
+            padding: 20px;
+            background-color: #2C2C2C;
+            border-left: 5px solid #FF8247;
+        }
+        .group-info h2 {
+            color: #FF8247;
+            margin: 0 0 16px 0;
+            font-size: 24px;
+        }
+        .group-detail {
+            margin-bottom: 12px;
+            font-size: 16px;
+        }
+        .group-detail .label {
+            color: #FF8247;
+            font-weight: 900;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 1px;
+            display: block;
+            margin-bottom: 4px;
+        }
+        .group-detail .value {
+            font-weight: normal;
+        }
+        .stats {
+            display: flex;
+            gap: 16px;
+            margin-top: 16px;
+        }
+        .stat {
+            background-color: #3A3A3A;
+            padding: 12px 16px;
+            flex: 1;
+            text-align: center;
+        }
+        .stat .number {
+            color: #FF8247;
+            font-size: 28px;
+            font-weight: 900;
+        }
+        .stat .stat-label {
+            color: white;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .login-prompt {
+            background-color: #2C4C5C;
+            color: #B4D4FF;
+            padding: 20px;
+            margin-bottom: 24px;
+            border-left: 5px solid #6BB4FF;
+        }
+        .login-prompt a {
+            color: #FF8247;
+            font-weight: 900;
+        }
+        .tagger-info {
+            background-color: #2C5C28;
+            color: #B4FFB4;
+            padding: 16px;
+            margin-bottom: 24px;
+            border-left: 5px solid #6BFF6B;
+        }
+        .tagger-info a {
+            color: #FF8247;
+            margin-left: 12px;
+        }
+        button {
+            background-color: #FF8247;
+            color: #3A3A3A;
+            padding: 18px 24px;
+            border: none;
+            border-radius: 0;
+            font-size: 20px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: transform 0.1s;
+            min-height: 56px;
+            touch-action: manipulation;
+        }
+        button:active {
+            transform: scale(0.98);
+        }
+        button:disabled {
+            background-color: #666;
+            color: #999;
+            cursor: not-allowed;
+        }
+        .messages {
+            margin-bottom: 24px;
+        }
+        .message {
+            padding: 16px;
+            border-radius: 0;
+            margin-bottom: 12px;
+            font-weight: bold;
+            border-left: 5px solid;
+            font-size: 15px;
+            line-height: 1.4;
+        }
+        .error {
+            background-color: #5C2828;
+            color: #FFB4B4;
+            border-left-color: #FF6B6B;
+        }
+        .success {
+            background-color: #2C5C28;
+            color: #B4FFB4;
+            border-left-color: #6BFF6B;
+        }
+        .cooldown-warning {
+            background-color: #5C4C28;
+            color: #FFE4B4;
+            padding: 16px;
+            margin-bottom: 24px;
+            border-left: 5px solid #FFB46B;
+        }
+        .nav-link {
+            display: inline-block;
+            color: #FF8247;
+            text-decoration: none;
+            font-weight: 900;
+            margin-top: 24px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Tag Groep</h1>
+
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <div class="message {{ message.tags }}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <div class="group-info">
+            <h2>{{ group.scout_group }}</h2>
+            <div class="group-detail">
+                <span class="label">Groepsnaam</span>
+                <span class="value">{{ group.name }}</span>
+            </div>
+            {% if group.members %}
+            <div class="group-detail">
+                <span class="label">Leden</span>
+                <span class="value">{{ group.members|linebreaksbr }}</span>
+            </div>
+            {% endif %}
+            <div class="stats">
+                <div class="stat">
+                    <div class="number">{{ tag_count }}</div>
+                    <div class="stat-label">Tags</div>
+                </div>
+            </div>
+        </div>
+
+        {% if not tagger %}
+        <div class="login-prompt">
+            Je moet ingelogd zijn om deze groep te taggen.
+            <a href="{% url 'tagger_login' %}">Log in als tagger</a>
+        </div>
+        {% else %}
+        <div class="tagger-info">
+            Ingelogd als: <strong>{{ tagger.name }}</strong>
+            <a href="{% url 'tagger_logout' %}">Uitloggen</a>
+        </div>
+
+        {% if not can_tag %}
+        <div class="cooldown-warning">
+            Deze groep is recent getagd. Wacht nog {{ cooldown_remaining }} minuten voordat je opnieuw kunt taggen.
+        </div>
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" {% if not can_tag %}disabled{% endif %}>
+                {% if can_tag %}Tag deze groep{% else %}Wachten...{% endif %}
+            </button>
+        </form>
+
+        <a href="{% url 'tagger_dashboard' %}" class="nav-link">Naar Dashboard</a>
+        {% endif %}
+    </div>
+</body>
+</html>
