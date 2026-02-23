@@ -4,7 +4,7 @@ from django.utils import timezone
 from django.db.models import Count
 from datetime import timedelta
 
-from ..models import Group, Tagger, Tag
+from ..models import Group, Tagger, Tag, Post, Scan, GameSettings
 
 
 def tagger_login(request):
@@ -76,6 +76,28 @@ def tag_group(request, qr_code_identifier):
             can_tag = False
             cooldown_remaining = 5 - int((timezone.now() - last_tag.tagged_at).total_seconds() / 60)
 
+    # Get game settings for points calculation
+    settings = GameSettings.load()
+
+    # Get all posts and scans for this group
+    posts = Post.objects.all().order_by('order', 'name')
+    scans = Scan.objects.filter(group=group).select_related('post')
+    scanned_post_ids = set(scan.post_id for scan in scans)
+
+    # Build post list with scan status
+    post_list = []
+    for post in posts:
+        post_list.append({
+            'post': post,
+            'scanned': post.id in scanned_post_ids,
+        })
+
+    # Calculate points
+    scan_count = len(scanned_post_ids)
+    scan_points = scan_count * settings.points_per_scan
+    tag_penalty_points = tag_count * settings.tag_penalty
+    total_points = max(0, settings.starting_points + scan_points - tag_penalty_points)
+
     context = {
         'group': group,
         'tagger': tagger,
@@ -83,6 +105,13 @@ def tag_group(request, qr_code_identifier):
         'last_tag': last_tag,
         'can_tag': can_tag,
         'cooldown_remaining': cooldown_remaining,
+        'post_list': post_list,
+        'scan_count': scan_count,
+        'total_posts': len(posts),
+        'scan_points': scan_points,
+        'tag_penalty_points': tag_penalty_points,
+        'total_points': total_points,
+        'settings': settings,
     }
 
     if request.method == 'POST' and tagger:

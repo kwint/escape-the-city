@@ -170,6 +170,71 @@
             text-transform: uppercase;
             letter-spacing: 1px;
         }
+        h3 {
+            color: #FF8247;
+            font-size: 16px;
+            margin: 24px 0 12px 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .posts-list {
+            background-color: #2C2C2C;
+            padding: 12px;
+        }
+        .post-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 12px;
+            border-bottom: 1px solid #3A3A3A;
+        }
+        .post-item:last-child {
+            border-bottom: none;
+        }
+        .post-status {
+            width: 28px;
+            font-size: 18px;
+        }
+        .post-status.scanned {
+            color: #6BFF6B;
+        }
+        .post-status.not-scanned {
+            color: #666;
+        }
+        .post-name {
+            flex: 1;
+            color: white;
+            font-size: 14px;
+        }
+        .post-name.not-scanned {
+            color: #666;
+        }
+        .points-summary {
+            background-color: #2C2C2C;
+            padding: 16px;
+            margin-top: 16px;
+            border-left: 5px solid #FF8247;
+        }
+        .points-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            color: white;
+            font-size: 14px;
+        }
+        .points-row.total {
+            border-top: 2px solid #FF8247;
+            margin-top: 8px;
+            padding-top: 12px;
+            font-weight: 900;
+            font-size: 18px;
+        }
+        .points-row .value {
+            color: #FF8247;
+            font-weight: 900;
+        }
+        .points-row .value.negative {
+            color: #FF6B6B;
+        }
     </style>
 </head>
 <body>
@@ -200,37 +265,82 @@
             {% endif %}
             <div class="stats">
                 <div class="stat">
+                    <div class="number">{{ scan_count }}/{{ total_posts }}</div>
+                    <div class="stat-label">Scans</div>
+                </div>
+                <div class="stat">
                     <div class="number">{{ tag_count }}</div>
                     <div class="stat-label">Tags</div>
+                </div>
+                <div class="stat">
+                    <div class="number">{{ total_points }}</div>
+                    <div class="stat-label">Punten</div>
                 </div>
             </div>
         </div>
 
+        <h3>Posten Overzicht</h3>
+        <div class="posts-list">
+            {% for item in post_list %}
+            <div class="post-item">
+                <span class="post-status {% if item.scanned %}scanned{% else %}not-scanned{% endif %}">
+                    {% if item.scanned %}✓{% else %}○{% endif %}
+                </span>
+                <span class="post-name {% if not item.scanned %}not-scanned{% endif %}">
+                    Post {{ item.post.order }}
+                </span>
+            </div>
+            {% empty %}
+            <div class="post-item">
+                <span class="post-name">Geen posten gevonden</span>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="points-summary">
+            <div class="points-row">
+                <span>Startpunten</span>
+                <span class="value">{{ settings.starting_points }}</span>
+            </div>
+            <div class="points-row">
+                <span>Scans ({{ scan_count }} x {{ settings.points_per_scan }})</span>
+                <span class="value">+{{ scan_points }}</span>
+            </div>
+            <div class="points-row">
+                <span>Tags ({{ tag_count }} x -{{ settings.tag_penalty }})</span>
+                <span class="value negative">-{{ tag_penalty_points }}</span>
+            </div>
+            <div class="points-row total">
+                <span>Totaal</span>
+                <span class="value">{{ total_points }}</span>
+            </div>
+        </div>
+
         {% if not tagger %}
-        <div class="login-prompt">
-            Je moet ingelogd zijn om deze groep te taggen.
-            <a href="{% url 'tagger_login' %}">Log in als tagger</a>
-        </div>
+            <div class="login-prompt">
+                Je moet ingelogd zijn om deze groep te taggen.
+                <a href="{% url 'tagger_login' %}">Log in als tagger</a>
+            </div>
         {% else %}
-        <div class="tagger-info">
-            Ingelogd als: <strong>{{ tagger.name }}</strong>
-            <a href="{% url 'tagger_logout' %}">Uitloggen</a>
-        </div>
+            <div class="tagger-info">
+                Ingelogd als: <strong>{{ tagger.name }}</strong>
+                <a href="{% url 'tagger_logout' %}">Uitloggen</a>
+            </div>
 
-        {% if not can_tag %}
-        <div class="cooldown-warning">
-            Deze groep is recent getagd. Wacht nog {{ cooldown_remaining }} minuten voordat je opnieuw kunt taggen.
-        </div>
-        {% endif %}
+            {% if not can_tag %}
+            <div class="cooldown-warning">
+                Deze groep is recent getagd. Wacht nog {{ cooldown_remaining }} minuten voordat je opnieuw kunt taggen.
+            </div>
+            {% endif %}
 
-        <form method="post">
-            {% csrf_token %}
-            <button type="submit" {% if not can_tag %}disabled{% endif %}>
-                {% if can_tag %}Tag deze groep{% else %}Wachten...{% endif %}
-            </button>
-        </form>
+            <form method="post">
+                {% csrf_token %}
+                <button type="submit" {% if not can_tag %}disabled{% endif %}>
+                    {% if can_tag %}Tag deze groep{% else %}Wachten...{% endif %}
+                </button>
+            </form>
 
-        <a href="{% url 'tagger_dashboard' %}" class="nav-link">Naar Dashboard</a>
+            <a href="{% url 'tagger_dashboard' %}" class="nav-link">Naar Dashboard</a>
         {% endif %}
     </div>
 </body>
