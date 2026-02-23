@@ -6,10 +6,10 @@ from django.utils import timezone
 class Group(models.Model):
     """Represents a team participating in the scavenger hunt."""
     name = models.CharField(max_length=100)
-    scout_group = models.CharField(max_length=100)
+    scout_group = models.CharField(max_length=100, help_text="Onderdeel")
     password = models.CharField(max_length=100)
     qr_code_identifier = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
-    members = models.TextField(blank=True, help_text="Namen van groepsleden (één per regel)")
+    members = models.TextField(blank=True, help_text="Namen van groepsleden")
     phone_number = models.CharField(max_length=20, blank=True, help_text="Contactnummer van de groep")
     created_at = models.DateTimeField(default=timezone.now)
 

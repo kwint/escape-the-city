@@ -225,9 +225,9 @@ class GameSettingsAdmin(admin.ModelAdmin):
 
 
 # Customize admin site header
-admin.site.site_header = 'Scavenger Hunt Admin'
-admin.site.site_title = 'Scavenger Hunt Admin'
-admin.site.index_title = 'Manage Your Scavenger Hunt'
+admin.site.site_header = 'Terugzetdropping 2026 Admin'
+admin.site.site_title = 'Terugzetdropping 2026 Admin'
+admin.site.index_title = 'Beheer Terugzetdropping 2026'
 
 
 # Add custom view link to admin
