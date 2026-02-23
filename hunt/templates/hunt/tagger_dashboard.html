@@ -178,16 +178,46 @@
             color: #B4D4FF;
             border-left-color: #6BB4FF;
         }
+        .button-container {
+            display: flex;
+            gap: 10px;
+            align-items: stretch;
+            height: 40px;
+            max-width: 200px;
+            margin-bottom: 24px;
+        }
+        .admin-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #FF8247;
+            color: #3A3A3A;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: bold;
+            transition: transform 0.2s;
+            flex-grow: 1;
+        }
+        .admin-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
     </style>
 </head>
 <body>
     <div class="container">
+
+        
         <h1>Bestuurder Dashboard</h1>
         <div class="tagger-info">
             Ingelogd als: <strong>{{ tagger.name }}</strong>
-            <a href="{% url 'tagger_logout' %}">Uitloggen</a>
         </div>
-
+        
+        <div class="button-container">
+            <a href="https://goo.gl/maps/tXZaM53Xq2cgnyqv7?g_st=ac" class="admin-link">Kaart</a>
+            <a href="{% url 'tagger_logout' %}" class="admin-link">Uitloggen</a>
+        </div>
         {% if messages %}
         <div class="messages">
             {% for message in messages %}
