@@ -4,6 +4,7 @@ from django.utils.html import format_html
 import random
 from .models import Group, Post, Scan, Tagger, Tag, GameSettings
 from .passwords import DUTCH_FOODS
+from .utils import generate_posts_pdf
 
 
 @admin.register(Group)
@@ -89,6 +90,12 @@ class ScanInline(admin.TabularInline):
         return False
 
 
+@admin.action(description="Download PDF met QR codes")
+def download_qr_pdf(modeladmin, request, queryset):
+    base_url = request.build_absolute_uri("/").rstrip("/")
+    return generate_posts_pdf(queryset.order_by("order", "name"), base_url)
+
+
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
     list_display = ['order', 'name', 'description', 'scan_count', 'scan_page_link', 'qr_code_link', 'created_at']
@@ -98,6 +105,7 @@ class PostAdmin(admin.ModelAdmin):
     list_filter = ['created_at']
     readonly_fields = ['qr_code_identifier', 'created_at', 'qr_code_preview', 'scan_page_link']
     inlines = [ScanInline]
+    actions = [download_qr_pdf]
 
     fieldsets = (
         ('Basic Information', {
