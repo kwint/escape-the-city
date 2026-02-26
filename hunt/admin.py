@@ -1,4 +1,6 @@
+import csv
 from django.contrib import admin
+from django.http import HttpResponse
 from django.urls import reverse
 from django.utils.html import format_html
 import random
@@ -7,12 +9,28 @@ from .passwords import DUTCH_FOODS
 from .utils import generate_posts_pdf
 
 
+def export_scan_links_csv(modeladmin, request, queryset):
+    """Export a CSV with LINK_RECORD rows for each group's scan/drop page."""
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="groups_scan_links.csv"'
+    writer = csv.writer(response, lineterminator='\n')
+    for group in queryset:
+        url = request.build_absolute_uri(
+            reverse('tag_group', args=[group.qr_code_identifier])
+        )
+        writer.writerow(['LINK_RECORD', url, 'URL'])
+    return response
+
+export_scan_links_csv.short_description = 'Export scan links (CSV)'
+
+
 @admin.register(Group)
 class GroupAdmin(admin.ModelAdmin):
     list_display = ['scout_group', 'name', 'password', 'tag_count', 'scan_count', 'qr_code_link', 'created_at']
     search_fields = ['scout_group', 'name']
     list_filter = ['scout_group', 'created_at']
     readonly_fields = ['created_at', 'qr_code_identifier', 'qr_code_preview', 'tag_page_link']
+    actions = [export_scan_links_csv]
 
     def get_fields(self, request, obj=None):
         """Hide password field when adding a new group, show it when editing."""
