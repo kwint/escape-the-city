@@ -406,7 +406,7 @@
             <tbody>
                 {% for action in recent_actions %}
                 <tr>
-                    <td style="background-color: #2C2C2C; color: #999; font-size: 12px; white-space: nowrap;">{{ action.time|date:"H:i" }}</td>
+                    <td style="background-color: #2C2C2C; color: #999; font-size: 12px; white-space: nowrap;" data-utc="{{ action.time|date:'c' }}">{{ action.time|date:"H:i" }}</td>
                     <td style="background-color: #2C2C2C; text-align: center;">
                         {% if action.type == 'scan' %}
                             <span style="color: #6BFF6B; font-weight: bold;">📍 SCAN</span>
@@ -438,5 +438,11 @@
         </table>
         </div>
     </div>
+<script>
+document.querySelectorAll('td[data-utc]').forEach(function(td) {
+    var d = new Date(td.dataset.utc);
+    td.textContent = d.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit', hour12: false});
+});
+</script>
 </body>
 </html>
