@@ -63,6 +63,9 @@ def overview(request):
 
         matrix.append(row)
 
+    # Sort by points (highest first)
+    matrix.sort(key=lambda r: r['net_score'], reverse=True)
+
     # Calculate post totals (how many groups completed each post)
     post_totals = []
     for post in posts:
