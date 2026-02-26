@@ -38,7 +38,7 @@
         }
         .group-info {
             color: white;
-            margin-bottom: 24px;
+            margin-bottom: 16px;
             padding: 20px;
             background-color: #2C2C2C;
             border-left: 5px solid #FF8247;
@@ -184,7 +184,7 @@
         .post-item {
             display: flex;
             align-items: center;
-            padding: 10px 12px;
+            padding: 5px 12px;
             border-bottom: 1px solid #3A3A3A;
         }
         .post-item:last-child {
@@ -212,6 +212,7 @@
             background-color: #2C2C2C;
             padding: 16px;
             margin-top: 16px;
+            margin-bottom: 16px;
             border-left: 5px solid #FF8247;
         }
         .points-row {
@@ -239,7 +240,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>Drop Groep</h1>
+        <h1>{{ group.scout_group }} | {{ group.name }}</h1>
 
         {% if messages %}
         <div class="messages">
@@ -252,11 +253,6 @@
         {% endif %}
 
         <div class="group-info">
-            <h2>{{ group.scout_group }}</h2>
-            <div class="group-detail">
-                <span class="label">Groepsnaam</span>
-                <span class="value">{{ group.name }}</span>
-            </div>
             {% if group.members %}
             <div class="group-detail">
                 <span class="label">Leden</span>
