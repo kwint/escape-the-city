@@ -13,7 +13,7 @@ def tagger_login(request):
     """
     # If already logged in, redirect to dashboard
     if request.session.get('tagger_id'):
-        return redirect('tagger_dashboard')
+        return redirect('overview')
 
     if request.method == 'POST':
         password = request.POST.get('password', '').strip().lower()
@@ -26,7 +26,7 @@ def tagger_login(request):
             tagger = Tagger.objects.get(password=password)
             request.session['tagger_id'] = tagger.id
             messages.success(request, f'Welkom, {tagger.name}!')
-            return redirect('tagger_dashboard')
+            return redirect('overview')
         except Tagger.DoesNotExist:
             messages.error(request, 'Ongeldig wachtwoord.')
             return render(request, 'hunt/tagger_login.html')
